@@ -65,6 +65,4 @@ curl \
   --output ${FILENAME} \
   --header "Authorization: Bearer ${PIVNET_ACCESS_TOKEN}" \
   ${URL}
-
-tar -xvf platform-automation-image-1.1.0-beta.1.tgz
 ```
