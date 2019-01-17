@@ -30,5 +30,18 @@ curl \
 DOWNLOAD_ELEMENT=$(echo ${RELEASE_JSON} |\
   jq -r '.product_files[] | select(.aws_object_key | endswith(".zip"))') # TODO needs improvement
 
+FILENAME=$(echo ${DOWNLOAD_ELEMENT} |\
+  jq -r '.aws_object_key | split("/") | last')
+
+URL=$(echo ${DOWNLOAD_ELEMENT} |\
+  jq -r '._links.download.href')
+
+curl \
+  --fail \
+  --location \
+  --output ${FILENAME} \
+  --header "Authorization: Bearer ${PIVNET_ACCESS_TOKEN}" \
+  ${URL}
+
 unzip platform-automation-tasks-*.zip
 ```
