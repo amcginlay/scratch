@@ -28,6 +28,8 @@ curl \
   --request POST \
   ${EULA_ACCEPTANCE_URL}
 
+# ------------------------------------------
+
 DOWNLOAD_ELEMENT=$(echo ${RELEASE_JSON} |\
   jq -r '.product_files[] | select(.aws_object_key | endswith(".zip"))') # TODO needs improvement
 
@@ -45,4 +47,24 @@ curl \
   ${URL}
 
 unzip platform-automation-tasks-*.zip
+
+# ------------------------------------------
+
+DOWNLOAD_ELEMENT=$(echo ${RELEASE_JSON} |\
+  jq -r '.product_files[] | select(.aws_object_key | endswith(".tgz"))') # TODO needs improvement
+
+FILENAME=$(echo ${DOWNLOAD_ELEMENT} |\
+  jq -r '.aws_object_key | split("/") | last')
+
+URL=$(echo ${DOWNLOAD_ELEMENT} |\
+  jq -r '._links.download.href')
+
+curl \
+  --fail \
+  --location \
+  --output ${FILENAME} \
+  --header "Authorization: Bearer ${PIVNET_ACCESS_TOKEN}" \
+  ${URL}
+
+tar -xvf platform-automation-image-1.1.0-beta.1.tgz
 ```
