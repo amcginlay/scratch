@@ -1,0 +1,34 @@
+# Download Platform Automation tasks to jumpbox
+
+```bash
+PCF_PIVNET_UAA_TOKEN=????????????????????????????-r
+
+PRODUCT_SLUG=platform-automation
+RELEASE_ID="latest"
+
+PIVNET_ACCESS_TOKEN=$(curl \
+  --fail \
+  --header "Content-Type: application/json" \
+  --data "{\"refresh_token\": \"${PCF_PIVNET_UAA_TOKEN}\"}" \
+  https://network.pivotal.io/api/v2/authentication/access_tokens |\
+    jq -r '.access_token')
+    
+RELEASE_JSON=$(curl \
+  --fail \
+  --header "Authorization: Bearer ${PIVNET_ACCESS_TOKEN}" \
+  "https://network.pivotal.io/api/v2/products/${PRODUCT_SLUG}/releases/${RELEASE_ID}")
+
+EULA_ACCEPTANCE_URL=$(echo ${RELEASE_JSON} |\
+  jq -r '._links.eula_acceptance.href')
+
+curl \
+  --fail \
+  --header "Authorization: Bearer ${PIVNET_ACCESS_TOKEN}" \
+  --request POST \
+  ${EULA_ACCEPTANCE_URL}
+
+DOWNLOAD_ELEMENT=$(echo ${RELEASE_JSON} |\
+  jq -r '.product_files[] | select(.aws_object_key | endswith(".zip"))') # TODO needs improvement
+
+unzip platform-automation-tasks-*.zip
+```
