@@ -1,4 +1,5 @@
-az-configuration:
-- name: us-central1-a
-- name: us-central1-b
-- name: us-central1-c
+x:
+  az-configuration:
+  - name: us-central1-a
+  - name: us-central1-b
+  - name: us-central1-c
