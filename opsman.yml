@@ -1,41 +1,31 @@
 ---
-az-configuration:
-- clusters:
-  - cluster: cluster-name
-    resource_pool: resource-pool-name
-  name: AZ01
-
-iaas-configuration:
-  vcenter_host: vcenter.example.com
-  vcenter_password: admin
-  vcenter_username: password
-
-network-assignment:
-  network:
-    name: INFRASTRUCTURE
-  other_availability_zones: []
-  singleton_availability_zone:
-    name: AZ01
-
-networks-configuration:
-  icmp_checks_enabled: false
-  networks:
-  - name: NETWORK-NAME
-
-director-configuration:
-  blobstore_type: local
-  bosh_recreate_on_next_deploy: false
-  custom_ssh_banner: null
-
-resource-configuration:
-  compilation:
-    instance_type:
-      id: automatic
-    instances: automatic
-
-security-configuration:
-  generate_vm_passwords: true
-  trusted_certificates:
-
-syslog-configuration:
-  enabled: false
+opsman-configuration:
+  gcp:
+    gcp_service_account: |
+      {
+        "type": "service_account",
+        "project_id": "project-id",
+        "private_key_id": "af719b1ca48f7b6ac67ca9c5319cb175",
+        "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+        "client_email": "user@project-id.iam.gserviceaccount.com",
+        "client_id": "1234567890",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://accounts.google.com/o/oauth2/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/user%40project-id.iam.gserviceaccount.com"
+      }
+    project: project-id
+    region: us-central1
+    zone: us-central1-b
+    vm_name: ops-manager-vm               # default: OpsManager-vm
+    # For SharedVPC: projects/[HOST_PROJECT_ID]/regions/[REGION]/subnetworks/[SUBNET]
+    vpc_subnet: infrastructure-subnet
+    tags: ops-manager
+    # This CPU, Memory and disk size demonstrated here
+    # match the defaults, and needn't be included if these are the desired values
+    custom_cpu: 2
+    custom_memory: 8
+    boot_disk_size: 100
+    # At least one IP address (public or private) needs to be assigned to the VM.
+    public_ip: 1.2.3.4.
+    private_ip: 10.0.0.2
